@@ -178,20 +178,9 @@ def chat(req: ChatRequest):
             "lang": lang
         })
 
-        # --- ÉTAPE 6 : NOTIFICATION ADMIN SI QUESTION NON RÉSOLUE ---
-        answer_lower = final_answer.lower()
-        is_unresolved = (
-            final_score < 0.6
-            or "pas trouve" in answer_lower
-            or "sorry" in answer_lower
-            or "erreur technique" in answer_lower
-            or "Desole je ne sais pas" in answer_lower
-            or "not found" in answer_lower
-            or "i don't know" in answer_lower
-            or "did not find" in answer_lower
-            or "introuvable" in answer_lower
-        )
-        if is_unresolved:
+        # --- ÉTAPE 6 : NOTIFICATION ADMIN UNIQUEMENT SI AUCUNE RÉPONSE TROUVÉE ---
+        # La question est résolue si la FAQ (score >= 0.85) OU les documents (score >= 0.6) ont fourni une réponse
+        if final_score < 0.6:
             try:
                 db.collection("notifications").add({
                     "target": "admin",
