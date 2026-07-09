@@ -1,0 +1,24 @@
+# Local envs
+.env
+.env.local
+.env.*
+
+# Node / build
+node_modules/
+dist/
+.vite/
+*.timestamp-*-*.mjs
+
+# OS / editors
+.DS_Store
+.vscode/*
+!.vscode/extensions.json
+.idea
+
+# Tests / coverage
+coverage
+__screenshots__/
+
+# Logs
+logs
+*.log

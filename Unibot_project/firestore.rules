@@ -1,0 +1,74 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isSignedIn() {
+      return request.auth != null
+    }
+
+    function isOwner(userId) {
+      return request.auth.uid == userId
+    }
+
+    function getCurrentUserDoc() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid))
+    }
+
+    function userRole() {
+      return getCurrentUserDoc().data.role
+    }
+
+    function isAdmin() {
+      return userRole() == 'admin'
+    }
+
+    function isGuest() {
+      return userRole() == 'guest'
+    }
+
+    function isUserRole() {
+      return userRole() == 'user' || userRole() == 'student'
+    }
+
+    function canManageOwnUser(userId) {
+      return isSignedIn() && isOwner(userId)
+    }
+
+    function canReadUser(userId) {
+      return isAdmin() || canManageOwnUser(userId)
+    }
+
+    function canCreateMessage(userId) {
+      return isSignedIn() && isOwner(userId) &&
+        (
+          !isGuest() ||
+          (request.resource.data.role != 'user') ||
+          (request.resource.data.role == 'user' && getCurrentUserDoc().data.questionCount < 3)
+        )
+    }
+
+    match /users/{userId} {
+      allow create: if isSignedIn() && isOwner(userId) &&
+        request.resource.data.role in ['user', 'guest', 'student']
+      allow read, update, delete: if isAdmin() || canReadUser(userId)
+
+      match /messages/{messageId} {
+        allow read: if isAdmin() || canReadUser(userId)
+        allow create: if isAdmin() || canCreateMessage(userId)
+        allow update, delete: if isAdmin() || canManageOwnUser(userId)
+      }
+    }
+
+    // ────── CHATS (Root level) ──────────
+    match /chats/{chatId} {
+      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid
+      allow read, update, delete: if isSignedIn() && resource.data.userId == request.auth.uid
+      
+      match /messages/{messageId} {
+        allow read: if isSignedIn() && get(/databases/$(database)/documents/chats/$(chatId)).data.userId == request.auth.uid
+        allow create: if isSignedIn() && get(/databases/$(database)/documents/chats/$(chatId)).data.userId == request.auth.uid
+        allow update, delete: if isSignedIn() && get(/databases/$(database)/documents/chats/$(chatId)).data.userId == request.auth.uid
+      }
+    }
+  }
+}

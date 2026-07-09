@@ -1,0 +1,23 @@
+﻿# --- Cœur de l'IA (LlamaIndex) ---
+llama-index==0.10.0
+llama-index-vector-stores-chroma
+llama-index-embeddings-openai
+llama-index-llms-openai
+
+# --- Base de données Vectorielle ---
+chromadb
+
+# --- Serveur API ---
+fastapi
+uvicorn
+python-dotenv
+
+# --- Base de données Applicative (Firebase) ---
+firebase-admin
+
+# --- Utilitaires ---
+pypdf
+pydantic
+requests
+httpx
+
