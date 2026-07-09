@@ -24,12 +24,12 @@ def cosine_similarity(v1, v2):
     return np.dot(v1, v2) / (np.linalg.norm(v1) * np.linalg.norm(v2))
 
 def search_faq(user_query_vector):
-    """Recherche la question la plus proche dans Firestore"""
+    """Recherche la questio la plus proche dans Firestore"""
     best_score = 0
     best_answer = None
 
     # On récupère toutes les FAQs de Firestore
-    faqs = db_firestore.collection("faq_collection").stream()
+    faqs = db_firestore.collection("faq_index").stream()
     
     for faq in faqs:
         data = faq.to_dict()
