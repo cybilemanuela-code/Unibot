@@ -242,5 +242,7 @@ async def transcribe(file: UploadFile = File(...)):
 
 if __name__ == "__main__":
     import uvicorn
+    import os
+    port = int(os.getenv("PORT", 8000))
     # Port 8000 pour le chat (L'admin tournera sur 8001)
     uvicorn.run(app, host="0.0.0.0", port=8000)
