@@ -23,7 +23,7 @@ from llama_index.llms.groq import Groq
 from llama_index.core import Settings
 
 load_dotenv()
-print("FIREBASE VARIABLE PRESENT:", bool(os.getenv("FIREBASE_SERVICE_ACCOUNT")))
+# print("FIREBASE VARIABLE PRESENT:", bool(os.getenv("FIREBASE_SERVICE_ACCOUNT")))
 # =========================
 # 1. CONFIGURATION DES IA
 # =========================
@@ -44,10 +44,10 @@ app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_credentials=True, 
 if not firebase_admin._apps:
     firebase_config = os.getenv("FIREBASE_SERVICE_ACCOUNT")
 
-if not firebase_config:
-    raise Exception("FIREBASE_SERVICE_ACCOUNT is missing")
+# if not firebase_config:
+#     raise Exception("FIREBASE_SERVICE_ACCOUNT is missing")
 
-cred = credentials.Certificate(json.loads(firebase_config))
+    cred = credentials.Certificate("serviceAccountKey.json")
 firebase_admin.initialize_app(cred)
 db = firestore.client()
 
@@ -55,10 +55,12 @@ chroma_client = chromadb.PersistentClient(
     path="./chroma_db"
 )
 
-try:
-    collection = chroma_client.get_collection("university_docs")
-except:
-    collection = chroma_client.create_collection("university_docs")
+# try:
+#     collection = chroma_client.get_collection("university_docs")
+# except:
+#     collection = chroma_client.create_collection("university_docs")
+
+collection = chroma_client.get_or_create_collection("university_docs")
 
 # =========================
 # 3. OUTILS LOGIQUES
