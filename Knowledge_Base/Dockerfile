@@ -19,6 +19,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Copier le projet
 COPY . .
+RUN python download_model.py
 
 # Exposer le port (optionnel, mais recommandé)
 EXPOSE 8000
