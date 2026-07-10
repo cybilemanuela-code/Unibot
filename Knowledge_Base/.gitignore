@@ -28,7 +28,7 @@ dist/
 .DS_Store
 Thumbs.db
 models/
-
+chroma_db/
 
 
 # Firebase credentials

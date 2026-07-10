@@ -51,8 +51,14 @@ cred = credentials.Certificate(json.loads(firebase_config))
 firebase_admin.initialize_app(cred)
 db = firestore.client()
 
-chroma_client = chromadb.PersistentClient(path="./chroma_db")
-collection = chroma_client.get_or_create_collection("university_docs")
+chroma_client = chromadb.PersistentClient(
+    path="./chroma_db"
+)
+
+try:
+    collection = chroma_client.get_collection("university_docs")
+except:
+    collection = chroma_client.create_collection("university_docs")
 
 # =========================
 # 3. OUTILS LOGIQUES
