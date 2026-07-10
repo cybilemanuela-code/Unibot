@@ -27,7 +27,7 @@ load_dotenv()
 # 1. CONFIGURATION DES IA
 # =========================
 print(" Chargement du modèle d'IA locale (Embeddings)...")
-embed_model = SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2")
+embed_model = SentenceTransformer("./models/all-MiniLM-L6-v2")
 
 print(" Connexion à Groq Cloud...")
 GROQ_KEY = os.getenv("GROQ_API_KEY")
