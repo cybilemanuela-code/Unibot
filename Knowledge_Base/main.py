@@ -23,7 +23,7 @@ from llama_index.llms.groq import Groq
 from llama_index.core import Settings
 
 load_dotenv()
-
+print("FIREBASE VARIABLE PRESENT:", bool(os.getenv("FIREBASE_SERVICE_ACCOUNT")))
 # =========================
 # 1. CONFIGURATION DES IA
 # =========================
