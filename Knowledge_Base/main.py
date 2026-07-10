@@ -23,7 +23,8 @@ from llama_index.llms.groq import Groq
 from llama_index.core import Settings
 
 load_dotenv()
-# print("FIREBASE VARIABLE PRESENT:", bool(os.getenv("FIREBASE_SERVICE_ACCOUNT")))
+print("FIREBASE VARIABLE PRESENT:", bool(os.getenv("FIREBASE_SERVICE_ACCOUNT")))
+print("FIREBASE LENGTH:", len(os.getenv("FIREBASE_SERVICE_ACCOUNT", "")))
 # =========================
 # 1. CONFIGURATION DES IA
 # =========================
@@ -49,18 +50,24 @@ app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_credentials=True, 
 
 #     cred = credentials.Certificate("serviceAccountKey.json")
 # firebase_admin.initialize_app(cred)
-firebase_env = os.getenv("FIREBASE_SERVICE_ACCOUNT")
+if not firebase_admin._apps:
 
-if firebase_env:
-        # Railway
-        cred = credentials.Certificate(json.loads(firebase_env))
-        print("Firebase chargé depuis variable d'environnement")
-else:
-        # Local
+    firebase_env = os.getenv("FIREBASE_SERVICE_ACCOUNT")
+
+    if firebase_env and firebase_env.strip().startswith("{"):
+        try:
+            firebase_config = json.loads(firebase_env)
+            cred = credentials.Certificate(firebase_config)
+            print("Firebase chargé depuis variable d'environnement")
+        except json.JSONDecodeError:
+            print("Variable FIREBASE_SERVICE_ACCOUNT invalide, utilisation du fichier local")
+            cred = credentials.Certificate("serviceAccountKey.json")
+    else:
         cred = credentials.Certificate("serviceAccountKey.json")
         print("Firebase chargé depuis fichier local")
 
-firebase_admin.initialize_app(cred)
+    firebase_admin.initialize_app(cred)
+
 db = firestore.client()
 
 chroma_client = chromadb.PersistentClient(

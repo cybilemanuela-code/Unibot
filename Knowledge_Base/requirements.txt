@@ -7,7 +7,7 @@ llama-index-llms-groq
 sentence-transformers==3.0.1
 
 # Base vectorielle
-chromadb==0.5.23
+chromadb==1.5.9
 
 # Serveur API
 fastapi
