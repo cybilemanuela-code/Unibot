@@ -3,6 +3,7 @@ import numpy as np
 import chromadb
 import re
 import shutil
+import json
 import uuid
 from fastapi import FastAPI
 from pydantic import BaseModel
@@ -41,8 +42,13 @@ app = FastAPI(title="Unibot Engine - PRO Version")
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_credentials=True, allow_methods=["*"], allow_headers=["*"])
 
 if not firebase_admin._apps:
-    cred = credentials.Certificate(os.getenv("FIREBASE_SERVICE_ACCOUNT"))
-    firebase_admin.initialize_app(cred)
+    firebase_config = os.getenv("FIREBASE_SERVICE_ACCOUNT")
+
+if not firebase_config:
+    raise Exception("FIREBASE_SERVICE_ACCOUNT is missing")
+
+cred = credentials.Certificate(json.loads(firebase_config))
+firebase_admin.initialize_app(cred)
 db = firestore.client()
 
 chroma_client = chromadb.PersistentClient(path="./chroma_db")
