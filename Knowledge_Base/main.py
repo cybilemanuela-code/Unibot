@@ -41,13 +41,25 @@ Settings.llm = llm_groq
 app = FastAPI(title="Unibot Engine - PRO Version")
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_credentials=True, allow_methods=["*"], allow_headers=["*"])
 
-if not firebase_admin._apps:
-    firebase_config = os.getenv("FIREBASE_SERVICE_ACCOUNT")
+# if not firebase_admin._apps:
+#     firebase_config = os.getenv("FIREBASE_SERVICE_ACCOUNT")
 
-# if not firebase_config:
-#     raise Exception("FIREBASE_SERVICE_ACCOUNT is missing")
+# # if not firebase_config:
+# #     raise Exception("FIREBASE_SERVICE_ACCOUNT is missing")
 
-    cred = credentials.Certificate("serviceAccountKey.json")
+#     cred = credentials.Certificate("serviceAccountKey.json")
+# firebase_admin.initialize_app(cred)
+firebase_env = os.getenv("FIREBASE_SERVICE_ACCOUNT")
+
+if firebase_env:
+        # Railway
+        cred = credentials.Certificate(json.loads(firebase_env))
+        print("Firebase chargé depuis variable d'environnement")
+else:
+        # Local
+        cred = credentials.Certificate("serviceAccountKey.json")
+        print("Firebase chargé depuis fichier local")
+
 firebase_admin.initialize_app(cred)
 db = firestore.client()
 
