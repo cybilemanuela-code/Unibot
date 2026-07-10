@@ -14,7 +14,7 @@ python-dotenv
 
 # --- Base de données Applicative (Firebase) ---
 firebase-admin
-
+sentence-transformers
 # --- Utilitaires ---
 pypdf
 pydantic
