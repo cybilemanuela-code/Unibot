@@ -1,7 +1,8 @@
 # Local envs
 .env
 .env.local
-.env.*
+! .env.production
+
 
 # Node / build
 node_modules/
